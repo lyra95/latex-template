@@ -1,0 +1,30 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+
+\section{Preliminary}
+\begin{theorem}
+    Cauchy's theorem.
+\begin{equation}
+    a_n = \frac{f^{(n)}(0)}{n!} = \frac{1}{2\pi i} \int_{|z|=r} \frac{f(z)}{z^{n+1}} \, dz
+\end{equation}
+\end{theorem}
+
+\begin{definition}
+    Complex logarithm is defined as
+\begin{equation}
+    \log z = \ln r + i\theta \quad (z=re^{i\theta}, \; r>0, \; \theta \in \mathbb{R})
+\end{equation}
+Here $\theta$ is always taken as the principal value, i.e., $-\pi < \theta \leq \pi$.
+Remind that $\log z$ is not continuous on the negative real axis.
+\end{definition}
+
+On $z\ll1$
+\begin{equation}
+    \sum_{n=0}^{\infty} p(n) z^n = \prod_{k=1}^{\infty} \frac{1}{1-z^k}
+\end{equation}
+
+Say $F(z) = \prod_{k=1}^{\infty} \frac{1}{1-z^k}$. Then,
+\begin{equation}
+    \log F(z) = -\sum_{k=1}^{\infty} log(1-z^k) = \sum_{k=1}^{\infty} \sum_{m=1}^{\infty} \frac{z^{km}}{m} = \sum_{n=1}^{\infty} \left( \sum_{k|n} \frac{1}{k} \right) z^n
+\end{equation}
+\end{document}

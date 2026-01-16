@@ -1,0 +1,23 @@
+{
+  "name": "LaTeX Development Environment",
+  "dockerFile": "Dockerfile",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "James-Yu.latex-workshop"
+      ],
+      "settings": {
+        "latex-workshop.latex.autoBuild.run": "onFileChange",
+        "latex-workshop.latex.outDir": "./out",
+        "latex-workshop.formatting.latex": "latexindent",
+        "latex-workshop.latex.recipe.default": "latexmk (xelatex)"
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "forwardPorts": [],
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y curl"
+}
