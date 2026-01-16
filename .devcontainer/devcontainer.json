@@ -1,0 +1,19 @@
+{
+  "name": "LaTeX Development Environment",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "James-Yu.latex-workshop",
+        "anthropic.claude-code"
+      ]
+    }
+  },
+  "remoteUser": "root",
+  "forwardPorts": [],
+  "mounts": [
+    "source=claude-config,target=/root/.claude,type=volume"
+  ]
+}

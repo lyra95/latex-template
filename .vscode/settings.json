@@ -1,0 +1,21 @@
+{
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/out",
+  "latex-workshop.formatting.latex": "latexindent",
+  "latex-workshop.latex.recipe.default": "latexmk (xelatex)",
+  // SyncTeX: 빌드가 끝날 때마다 PDF 뷰어가 커서 위치로 자동 이동한다.
+  //
+  // 빌드를 기다리지 않고 즉시 이동하려면 아래 단축키를 쓴다.
+  //
+  //   tex -> pdf (forward search, "SyncTeX from cursor")
+  //     macOS         : Cmd + Option + J
+  //     Windows/Linux : Ctrl + Alt + J
+  //     (편집기 우클릭 -> SyncTeX from cursor 로도 가능)
+  //
+  //   pdf -> tex (inverse search)
+  //     macOS         : Cmd + 클릭
+  //     Windows/Linux : Ctrl + 클릭
+  //
+  // 전제: latexmk에 -synctex=1 이 켜져 있어야 한다 (Makefile 참고).
+  "latex-workshop.synctex.afterBuild.enabled": true
+}

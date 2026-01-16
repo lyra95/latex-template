@@ -1,0 +1,11 @@
+{
+  // 이 레포를 열었을 때 VS Code가 설치를 추천하는 확장.
+  // devcontainer.json 의 customizations.vscode.extensions 와 같은 목록을 둔다.
+  //   - devcontainer.json : 컨테이너 안에 "자동 설치"
+  //   - 이 파일           : 컨테이너 없이 로컬(맥 등)에서 열었을 때 "추천"
+  // 둘 중 하나를 고치면 다른 쪽도 같이 맞춰줄 것.
+  "recommendations": [
+    "James-Yu.latex-workshop",
+    "anthropic.claude-code"
+  ]
+}
