@@ -4,18 +4,18 @@
 \section{Preliminary}
 \begin{theorem}
     Cauchy's theorem.
-\begin{equation}
-    a_n = \frac{f^{(n)}(0)}{n!} = \frac{1}{2\pi i} \int_{|z|=r} \frac{f(z)}{z^{n+1}} \, dz
-\end{equation}
+    \begin{equation}
+        a_n = \frac{f^{(n)}(0)}{n!} = \frac{1}{2\pi i} \int_{|z|=r} \frac{f(z)}{z^{n+1}} \, dz
+    \end{equation}
 \end{theorem}
 
 \begin{definition}
     Complex logarithm is defined as
-\begin{equation}
-    \log z = \ln r + i\theta \quad (z=re^{i\theta}, \; r>0, \; \theta \in \mathbb{R})
-\end{equation}
-Here $\theta$ is always taken as the principal value, i.e., $-\pi < \theta \leq \pi$.
-Remind that $\log z$ is not continuous on the negative real axis.
+    \begin{equation}
+        \log z = \ln r + i\theta \quad (z=re^{i\theta}, \; r>0, \; \theta \in \mathbb{R})
+    \end{equation}
+    Here $\theta$ is always taken as the principal value, i.e., $-\pi < \theta \leq \pi$.
+    Remind that $\log z$ is not continuous on the negative real axis.
 \end{definition}
 
 On $z\ll1$
@@ -23,8 +23,55 @@ On $z\ll1$
     \sum_{n=0}^{\infty} p(n) z^n = \prod_{k=1}^{\infty} \frac{1}{1-z^k}
 \end{equation}
 
-Say $F(z) = \prod_{k=1}^{\infty} \frac{1}{1-z^k}$. Then,
+\begin{proposition}
+    \begin{equation}
+        \int \frac{1}{1-w} \, dw = -\log(1-w)
+    \end{equation}
+    Therefore,
+    \begin{equation}
+        -\log(1-w) = \int \sum_{n=0}^{\infty} w^n \, dw = \sum_{n=0}^{\infty} \frac{w^{n+1}}{n+1} = \sum_{n=1}^{\infty} \frac{w^n}{n}
+    \end{equation}
+\end{proposition}
+
+Say $F(z) = \prod_{k=1}^{\infty} \frac{1}{1-z^k}$. Then, using the above proposition and switching the order of summation,
 \begin{equation}
-    \log F(z) = -\sum_{k=1}^{\infty} log(1-z^k) = \sum_{k=1}^{\infty} \sum_{m=1}^{\infty} \frac{z^{km}}{m} = \sum_{n=1}^{\infty} \left( \sum_{k|n} \frac{1}{k} \right) z^n
+    \log F(z) = -\sum_{k=1}^{\infty} \log(1-z^k) = \sum_{k=1}^{\infty} \sum_{j=1}^{\infty} \frac{z^{kj}}{j} = \sum_{j=1}^{\infty} \frac{1}{j} \left( \sum_{k=1}^{\infty} z^{kj} \right) = \sum_{j=1}^{\infty} \frac{1}{j} \cdot \frac{z^j}{1-z^j}
 \end{equation}
+
+The set $\{z \ll 1\}$ is equivalent to $\{ w, \Re(w) > 0 \}$ where $z = e^{-w}$. Substituting this,
+\begin{equation}
+    \log F(e^{-w}) = \sum_{j=1}^{\infty} \frac{1}{j} \cdot \frac{e^{-jw}}{1 - e^{-jw}} = \sum_{j=1}^{\infty} \frac{1}{j} \cdot \frac{1}{e^{jw} - 1}
+\end{equation}
+
+\begin{proposition}
+    When $w$ is near $0$,
+    \begin{equation}
+        e^{w} = 1 + w + \frac{w^2}{2} + \frac{w^3}{6} + \cdots
+    \end{equation}
+    \begin{equation}
+        \begin{split}
+            \frac{1}{e^{w}-1} & = \frac{1}{\sum\frac{w^n}{n!}} \\
+            & = \frac{1}{w} \cdot \frac{1}{1 + \frac{w}{2} + \frac{w^2}{6} + \cdots} \\
+            & = \frac{1}{w} \left( 1 - \frac{w}{2} + \frac{w^2}{12} - \frac{w^4}{720} + \cdots \right) \\
+            & = \frac{1}{w} - \frac{e^{-w}}{2} + cw + \cdots
+        \end{split}
+    \end{equation}
+\end{proposition}
+
+Let's decompose the term $\frac{1}{e^{jw}-1}$ as follows:
+\begin{equation}
+    \frac{1}{e^{jw}-1} = \left( \frac{1}{jw} - \frac{e^{-jw}}{2} \right) + \left( \frac{1}{e^{jw}-1} - \frac{1}{jw} + \frac{e^{-jw}}{2} \right)
+\end{equation}
+Later, we will analysis $w$ near $0$ part and the other part separately. Plugging this into the expression of $\log F(e^{-w})$,
+\begin{equation}
+    \begin{split}
+        \log F(e^{-w})
+        &= \sum_{j=1}^{\infty} \frac{1}{j} \left( \frac{1}{jw} - \frac{e^{-jw}}{2} \right)
+            + \sum_{j=1}^{\infty} \frac{1}{j} \left( \frac{1}{e^{jw}-1} - \frac{1}{jw} + \frac{e^{-jw}}{2} \right) \\
+        &= \frac{\pi^2}{6w}
+            - \frac{1}{2} \log(1 - e^{-w})
+            + \sum_{j=1}^{\infty} \frac{1}{j} \left( \frac{1}{e^{jw}-1} - \frac{1}{jw} + \frac{e^{-jw}}{2} \right)
+    \end{split}
+\end{equation}
+
 \end{document}

@@ -7,8 +7,8 @@
         "James-Yu.latex-workshop"
       ],
       "settings": {
-        "latex-workshop.latex.autoBuild.run": "onFileChange",
-        "latex-workshop.latex.outDir": "./out",
+        "latex-workshop.latex.autoBuild.run": "onSave",
+        "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/out",
         "latex-workshop.formatting.latex": "latexindent",
         "latex-workshop.latex.recipe.default": "latexmk (xelatex)"
       }
