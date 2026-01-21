@@ -1,16 +1,23 @@
 \documentclass{book}
 \usepackage{subfiles}
+\usepackage[left=1.5cm, right=2cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
   
 \input{common}
 
 
-\title{LaTeX Template with Korean Support}
-\author{Your Name}
+\title{Analytic Number Theory 해설본 (draft)}
+\author{조태혁}
 \date{\today}
 
 \begin{document}
 
 \maketitle
+
+\chapter*{Preface}
+\subfile{preface.tex}
 
 \tableofcontents
 
@@ -19,5 +26,9 @@
 
 \chapter{The Partition Function}\label{chap2}
 \subfile{chapters/ch2.tex}
+
+\appendix
+\chapter{Appendix}
+\subfile{chapters/appendix.tex}
 
 \end{document}
