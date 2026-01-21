@@ -1,15 +1,129 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
 
+이 장에서는 Analytic Number Theory가 어떤 분야인지를 간단하게 소개합니다.
+몇 가지 예제 문제와 풀이로 구성되어 있으며, 일부만 골라 읽어도 충분히 소개의 목적은 달성할 수 있을 것 같습니다.
+더럽고 지루한 계산이 비교적 드물어 Analytic Number Theory의 나쁜 이미지가 숨겨진 함정 같다고 생각합니다. 마치 학부생을 낚는 교수님의 미끼 같달까요?
+
+개인적으로는 이 장을 읽는데 오래 끄는 것을 추천하지 않습니다.
+마지막 섹션 \hyperref[sec:dissection]{Dissection into Arithmetic Progressions} 정도가 간략하고 소개로써도 적절하다고 생각합니다.
+해당 섹션만 읽고 넘어가는 것도 추천합니다.
+
 \section{Change Making}
 \begin{problem}
-$a_1, a_2, \ldots, a_n$ 단위의 동전이 무한히 존재할 때, 거스름돈 $n$원을 만드는 방법의 수는?
+$a_1$원 짜리, $a_2$원 짜리, ..., $a_k$원 짜리 동전이 있습니다. (각 동전은 무한히 많다고 가정합니다.) \\
+자연수 $n$원을 이 동전들로 만드는 방법의 수는? ($C(n)$이라 표기합시다) \\
+단, $a_1, a_2, \ldots, a_k$의 최대공약수는 1이라고 가정합니다.
 \end{problem}
 
+갑자기 일반화된 문제라니! 일단 다음의 문제를 생각해봅시다.
 
+\begin{problem}
+1원 짜리, 2원 짜리, 3원 짜리 동전이 있습니다. (각 동전은 무한히 많다고 가정합니다.) \\
+자연수 $n$원을 이 동전들로 만드는 방법의 수는? ($C(n)$이라 표기합시다)
+\end{problem}
 
-\section{Korean Section}
-한국어 섹션입니다.
-This is a Korean section.
+예를들어 $4=3+1=2+2=2+1+1=1+1+1+1$이므로 $C(4)=4$입니다.
+
+\begin{proof}
+  2원 짜리 동전으로 만들 수 있는 수는 2, 4, 6, 8, ... 이고, 각각 1가지 방법이 있습니다. 이를 한 번에 요약하는 방법이 있습니다:
+  \begin{equation*}
+    \frac{1}{1 - z^{2}} = 1 + z^2 + z^4 + z^6 + z^8 + \cdots
+  \end{equation*}
+  1원 짜리 동전과 3원 짜리 동전도 마찬가지로 표현할 수 있습니다:
+  \begin{align*}
+    \frac{1}{1 - z}     & = 1 + z + z^2 + z^3 + z^4 + \cdots      \\
+    \frac{1}{1 - z^{3}} & = 1 + z^3 + z^6 + z^9 + z^{12} + \cdots
+  \end{align*}
+  이러한 함수를 \textbf{\href{https://en.wikipedia.org/wiki/Generating_function}{generating function}}이라고 부릅니다.
+  크게 중요하지 않지만, 여기서 $z$는 Complex number이며 위 식은 $|z|<1$이어야만 성립한다는 점에 유의하시기 바랍니다.
+  
+  이 함수들을 모두 곱해봅시다:
+  \begin{equation*}
+    \frac{1}{(1 - z)(1 - z^{2})(1 - z^{3})} = (1 + z + z^2 + \cdots)(1 + z^2 + z^4 + \cdots)(1 + z^3 + z^6 + \cdots)
+  \end{equation*}
+  우변을 전개했을 때, $z^n$의 계수는 무엇을 의미할까요? 바로 $C(n)$입니다. 즉,
+  \begin{equation*}
+    \frac{1}{(1 - z)(1 - z^{2})(1 - z^{3})} = \sum_{n=0}^{\infty} C(n) z^{n}
+  \end{equation*}
+  입니다.
+  
+  $\frac{1}{p(z)}$꼴의 분모가 다항식인 함수는 $\frac{A}{(1-\alpha z)^{k}}$ 꼴의 분수들의 합으로 나타낼 수 있다는 고등학교 수학을 기억하시나요? ($\alpha^{-1}$는 $p(z)$의 근)
+  미정 계수의 분수 합 식을 세운 후, 몇 번의 숫자 대입을 통해 미정 계수를 결정지을 수 있습니다.
+  \begin{equation*}
+    (1 - z)(1 - z^{2})(1 - z^{3}) = (1-z)^{3}(1+z)(1-\omega z)(1-\omega^{2} z)
+  \end{equation*}
+  이고, 위에 언급한 방법대로 계산하면 다음을 얻을 수 있습니다:
+  \begin{equation*}
+    \frac{1}{(1-z)(1-z^2)(1-z^3)} = \frac{1}{6} \frac{1}{(1-z)^3} + \frac{1}{4} \frac{1}{(1-z)^2} + \frac{1}{4} \frac{1}{(1-z^2)} + \frac{1}{3} \frac{1}{(1-z^3)}
+  \end{equation*}
+  우변의 각 항들은 다시 series로 만들 수 있습니다:
+  \begin{align*}
+    \frac{1}{1 - z}     & = 1 + z + z^2 + z^3 + z^4 + \cdots                 \\
+    \frac{1}{1 - z^{2}} & = 1 + (z^2) + (z^2)^2 + (z^2)^3 + (z^2)^4 + \cdots \\
+    \frac{1}{(1 - z)^2} & = \frac{d}{dz}\frac{1}{1 - z}
+  \end{align*}
+  이런 결과를 종합하여 우변을 다시 series로 나타내면 다음과 같습니다:
+  \begin{equation*}
+    \sum\left\lfloor \frac{n^2}{12} + \frac{n}{2} + 1 \right\rfloor z^{n}
+  \end{equation*}
+  즉 $C(n) = \left\lfloor \frac{n^2}{12} + \frac{n}{2} + 1 \right\rfloor$입니다.
+\end{proof}
+
+다시 일반화된 문제로 돌아옵시다. 같은 과정을 거쳐 고등학교 수학 수준의 계산으로 $C(n)$을 구하면 되지 않을까요?
+안타깝게도 평생 연필을 휘갈겨도 어려울 것입니다. 이럴 때는 질문을 바꿔봅시다: $C(n)$의 \textbf{근사값}을 구할 수 있을까요?
+
+결론부터 말하자면 다음과 같습니다:
+\begin{equation*}
+  C(n) \sim \frac{n^{k-1}}{a_1 a_2 \cdots a_k (k-1)!}
+\end{equation*}
+여기서 $f(n) \sim g(n)$은 $\lim_{n \to \infty} \frac{f(n)}{g(n)} = 1$을 의미합니다. (1,2,3원 문제에서의 결과와 일치하나요?)
+
+\begin{proof}
+  \begin{equation*}
+    \sum C(n) z^{n} = \frac{1}{(1 - z^{a_1})(1 - z^{a_2}) \cdots (1 - z^{a_k})}
+  \end{equation*}
+  여기까지는 앞서와 같이 논리가 동일합니다.
+  $a_{1}, a_{2}, \ldots, a_{k}$의 최대공약수가 1이라고 했으므로, 분모의 다항식은 $z=1$이라는 중근을 가장 많이 갖습니다. 그리고 정확히 $k$중근입니다.
+  고로 우변을 풀어헤쳤을 때, $\frac{c}{(1-z)^{k}}$ 꼴의 항이 반드시 존재합니다. \\
+  다른 근 $\omega^{-1}$들도 $\frac{a_{\omega}}{(1-\omega z)^{j}}$ 꼴의 항으로 등장할 것입니다. ($j$는 1부터 $\omega^{-1}$ 중근의 개수까지)
+  재차 강조하지만, $z=1$이 가장 많은 중근이므로 $j$는 $k$보다 작습니다. \\
+  즉, 정리하자면
+  
+  \begin{equation}
+    \label{eq:partial_fraction}
+    \begin{split}
+      \frac{1}{(1 - z^{a_1})(1 - z^{a_2}) \cdots (1 - z^{a_k})} &= \frac{c}{(1-z)^{k}} + \frac{c'}{(1-z)^{k-1}} + \cdots \\
+      &\quad + \sum_{\omega, j}\frac{a_{\omega}}{(1-\omega z)^{j}}
+    \end{split}
+  \end{equation}
+\end{proof}
+입니다. 우변을 series로 바꾸었을 때, $z^{n}$의 계수에는 다음과 같은 항들이 등장합니다:
+\begin{itemize}
+  \item $\frac{c}{(1-z)^{k}}$ 꼴의 항에서 나오는 항: $c\binom{n+k-1}{k-1} \sim c\frac{n^{k-1}}{(k-1)!}$
+  \item $\frac{c'}{(1-z)^{k-1}}$ 꼴의 항에서 나오는 항: $c'\binom{n+k-2}{k-2} \sim c'\frac{n^{k-2}}{(k-2)!}$
+  \item \dots
+  \item $\frac{a_{\omega}}{(1-\omega z)^{j}}$ 꼴의 항에서 나오는 항: $a_{\omega} \binom{n+j-1}{j-1} \omega^{n} \sim C\frac{n^{j-1}}{(j-1)!}$
+\end{itemize}
+사소하지만 $c,c', ...$들은 실수이지만, $a_{\omega}$들은 복소수일 수 있는 점에 유의합시다. 복소수의 경우라면 $\sim$의 의미를 $\lim_{n \to \infty} \frac{|f(n)|}{|g(n)|} = 1$로 이해하면 좋을 것 입니다.
+그리고 $|\omega|=1$이므로 (왜죠?) $\omega^{n}$은 크기에 전혀 기여하지 않습니다.
+
+위의 리스트 중에 가장 큰 기여를 하는 항, 즉 $n$의 지수가 가장 큰 항은 $c\frac{n^{k-1}}{(k-1)!}$입니다. 즉,
+\begin{equation*}
+  C(n) \sim c \frac{n^{k-1}}{(k-1)!}
+\end{equation*}
+입니다. 이제 $c$를 구하는 일만 남았습니다.
+
+식 \eqref{eq:partial_fraction}에서 관심 없는 항을 다 치워버리고 이렇게 씁시다:
+\begin{equation*}
+  \frac{1}{(1 - z^{a_1})(1 - z^{a_2}) \cdots (1 - z^{a_k})} = \frac{c}{(1-z)^{k}} + \text{other terms}
+\end{equation*}
+양변에 $(1-z)^{k}$를 곱하여, 식이 더 이상 $z=1$에서 발산하지 않도록 합시다:
+\begin{equation*}
+  \frac{1-z}{1-z^{a_1}} \cdot \frac{1-z}{1-z^{a_2}} \cdots \frac{1-z}{1-z^{a_k}} = c + (1-z)^{k} \times \text{other terms}
+\end{equation*}
+other terms에 $(1-z)^{-j}$가 있을 수 있지만, $j<k$이므로 우변은 여전히 $z=1$에서 유한합니다. 이제 $z\to 1$로 극한을 취하고, 좌변에서 L'Hôpital의 법칙을 적용하면, $c = \frac{1}{a_1 a_2 \cdots a_k}$임을 알 수 있습니다.
+\section{Dissection into Arithmetic Progressions}
+\label{sec:dissection}
 
 \end{document}
