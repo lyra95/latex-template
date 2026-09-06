@@ -1,1 +1,6 @@
 * text=auto
+
+# 컨테이너(리눅스) 안에서 실행되는 파일은 Windows에서 체크아웃해도 LF를 유지해야 한다.
+*.sh        text eol=lf
+Dockerfile  text eol=lf
+Makefile    text eol=lf

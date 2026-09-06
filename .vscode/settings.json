@@ -1,21 +1,86 @@
 {
+  // ───────────────────────────── 빌드 ─────────────────────────────
+  // 호스트에는 TeX를 설치하지 않는다. LaTeX Workshop 이 "docker run" 으로 컨테이너 안에서
+  // latexmk 를 돌린다 (scripts/latexmk.sh). 이미지는 먼저 한 번 만들어 두어야 한다:
+  //   Terminal > Run Task > "latex: build docker image"   (= docker build -t latex-template docker)
+  //
+  // 프로젝트 루트를 컨테이너의 /work 에 마운트하고, 호스트 경로를 HOST_DIR 로 넘긴다.
+  // 빌드가 끝나면 scripts/fix-synctex.sh 가 out/main.synctex.gz 안의 /work/... 경로를
+  // HOST_DIR/... 로 바꿔 놓으므로, 호스트에서 돌아가는 sioyek 이 .tex 파일을 찾을 수 있다.
   "latex-workshop.latex.autoBuild.run": "onSave",
   "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/out",
+  // LaTeX Workshop 의 "내장" docker 모드는 끈다. 켜면 확장이 latexmk/latexindent 를 자기 번들
+  // wrapper(Windows 는 .bat → 셸 없는 spawn 으로는 실행 불가)로 바꿔치기하고, %WORKSPACE_FOLDER% /
+  // %DIR% 같은 플레이스홀더가 전부 "./" 로 바뀌어 아래 "-v %WORKSPACE_FOLDER%:/work" 가 깨진다.
+  // 또 HOST_DIR 을 넘길 방법이 없어 synctex 경로 치환도 못 한다. 그래서 docker run 을 직접 tool 로 정의한다.
+  "latex-workshop.docker.enabled": false,
+  "latex-workshop.latex.recipe.default": "docker: latexmk (xelatex)",
+  "latex-workshop.latex.recipes": [
+    { "name": "docker: latexmk (xelatex)", "tools": ["docker-latexmk"] }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      // command 는 셸 없이 spawn 되므로 `docker` 는 PATH 위의 진짜 실행파일(.exe)이어야 한다.
+      // .cmd/.bat 스크립트면 "spawn docker ENOENT" 가 난다.
+      "name": "docker-latexmk",
+      "command": "docker",
+      "args": [
+        "run", "--rm",
+        "-v", "%WORKSPACE_FOLDER%:/work",
+        "-w", "/work",
+        "-e", "HOST_DIR=%WORKSPACE_FOLDER%",
+        "latex-template",
+        "sh", "scripts/latexmk.sh", "%RELATIVE_DOC%"
+      ]
+    }
+  ],
+  // ───────────────────────────── 포매팅 ─────────────────────────────
+  // latexindent 도 컨테이너 안의 것을 쓴다. LaTeX Workshop 은 문서 내용을 같은 디렉터리의
+  // __latexindent_temp_<파일명> 에 써 두고 latexindent 의 stdout 을 결과로 받는다. %TMPFILE% 은
+  // 호스트 경로이므로 scripts/latexindent.sh 가 /work/... 경로로 바꿔서 latexindent 를 실행한다.
+  // 저장할 때 자동으로 포매팅되고(아래 "[latex]"), 수동은 Shift+Alt+F.
   "latex-workshop.formatting.latex": "latexindent",
-  "latex-workshop.latex.recipe.default": "latexmk (xelatex)",
-  // SyncTeX: 빌드가 끝날 때마다 PDF 뷰어가 커서 위치로 자동 이동한다.
+  "latex-workshop.formatting.latexindent.path": "docker",
+  "latex-workshop.formatting.latexindent.args": [
+    "run", "--rm",
+    "-v", "%WORKSPACE_FOLDER%:/work",
+    "-w", "/work",
+    "latex-template",
+    "sh", "scripts/latexindent.sh",
+    "%WORKSPACE_FOLDER%", "%TMPFILE%",
+    "-y=defaultIndent: '%INDENT%'"
+  ],
+  "[latex]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "James-Yu.latex-workshop"
+  },
+
+  // ──────────────────────── 뷰어: sioyek (외부) ────────────────────────
+  // 내장 뷰어 대신 sioyek 을 쓴다. sioyek 이 PATH 에 있어야 한다.
+  // (macOS 는 /Applications/sioyek.app/Contents/MacOS/sioyek 전체 경로를 적어야 할 수 있다.)
+  "latex-workshop.view.pdf.viewer": "external",
+  "latex-workshop.view.pdf.external.viewer.command": "sioyek",
+  "latex-workshop.view.pdf.external.viewer.args": [
+    "--reuse-window",
+    "%PDF%"
+  ],
+
+  // ───────────────────── SyncTeX: tex <-> pdf ─────────────────────
+  // forward search (tex -> pdf): sioyek 의 --forward-search-file/-line 으로 처리.
+  //   - 저장 → 빌드 → 자동으로 커서 위치로 이동 (synctex.afterBuild.enabled)
+  //   - 빌드 없이 즉시 이동: Ctrl+Alt+J (macOS: Cmd+Option+J), 또는 우클릭 > SyncTeX from cursor
+  //   - --nofocus: 저장할 때마다 sioyek 이 포커스를 가져가지 않게 한다.
   //
-  // 빌드를 기다리지 않고 즉시 이동하려면 아래 단축키를 쓴다.
-  //
-  //   tex -> pdf (forward search, "SyncTeX from cursor")
-  //     macOS         : Cmd + Option + J
-  //     Windows/Linux : Ctrl + Alt + J
-  //     (편집기 우클릭 -> SyncTeX from cursor 로도 가능)
-  //
-  //   pdf -> tex (inverse search)
-  //     macOS         : Cmd + 클릭
-  //     Windows/Linux : Ctrl + 클릭
-  //
-  // 전제: latexmk에 -synctex=1 이 켜져 있어야 한다 (Makefile 참고).
+  // inverse search (pdf -> tex): sioyek 에서 F4 로 synctex 모드를 켠 뒤, 본문을 우클릭.
+  //   어떤 에디터를 띄울지는 sioyek 쪽 설정(prefs_user.config 의 inverse_search_command)에 둔다.
+  //   여기서 --inverse-search 로 넘기면 prefs 를 덮어쓰므로 넘기지 않는다. (Readme "사전 준비" 참고)
+  "latex-workshop.view.pdf.external.synctex.command": "sioyek",
+  "latex-workshop.view.pdf.external.synctex.args": [
+    "--reuse-window",
+    "--nofocus",
+    "--forward-search-file", "%TEX%",
+    "--forward-search-line", "%LINE%",
+    "%PDF%"
+  ],
   "latex-workshop.synctex.afterBuild.enabled": true
 }

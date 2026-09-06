@@ -1,0 +1,40 @@
+{
+  // 이미지 빌드/포매팅처럼 LaTeX Workshop 밖에서 가끔 실행하는 명령.
+  // Terminal > Run Task 에서 고른다.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "latex: build docker image",
+      "detail": "docker build -t latex-template docker  (최초 1회, 시간이 오래 걸린다)",
+      "type": "shell",
+      "command": "docker build -t latex-template docker",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "latex: build pdf",
+      "detail": "LaTeX Workshop 이 하는 것과 같은 명령을 터미널에서 실행 (디버깅용)",
+      "type": "shell",
+      "command": "docker run --rm -v \"${workspaceFolder}:/work\" -w /work -e \"HOST_DIR=${workspaceFolder}\" latex-template sh scripts/latexmk.sh main.tex",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "latex: format (latexindent)",
+      "detail": "컨테이너 안의 latexindent 로 *.tex, chapters/*.tex 를 제자리 포매팅",
+      "type": "shell",
+      "command": "docker run --rm -v \"${workspaceFolder}:/work\" -w /work latex-template sh -c 'latexindent -w -s *.tex chapters/*.tex'",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "latex: open pdf in sioyek",
+      "detail": "sioyek 으로 out/main.pdf 열기",
+      "type": "shell",
+      "command": "sioyek --reuse-window \"${workspaceFolder}/out/main.pdf\"",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    }
+  ]
+}
