@@ -32,14 +32,23 @@ Makefile                 CLI용 (make image / pdf / format / html / clean)
    (podman 을 docker 대신 쓰는 경우 `podman.exe` 를 가리키는 `docker.exe` symlink 를 두면 된다.)
 2. **sioyek** — PATH 에 있어야 한다. macOS 는 `/Applications/sioyek.app/Contents/MacOS/sioyek` 전체 경로를
    `.vscode/settings.json` 의 `latex-workshop.view.pdf.external.*.command` 에 적어야 할 수 있다.
+   Windows 에서 winget 의 portable 패키지(`ahrm.sioyek`)로 깔면 PATH 에 잡히는 것은
+   `%LOCALAPPDATA%\Microsoft\WinGet\Links\sioyek.exe` **symlink** 이다. sioyek 은 Qt DLL 을 exe 옆에 두고
+   쓰는데 이 링크로 실행하면 DLL 탐색 기준이 `Links\` 가 되어 `0xC0000135`(STATUS_DLL_NOT_FOUND) 로 즉시 죽는다.
+   확장은 종료 코드만 로그에 남기고 아무 것도 띄우지 않으므로 `Ctrl+Alt+V` 가 "무반응" 으로 보인다.
+   sioyek 폴더를 통째로 옮긴 뒤 **그 폴더 자체**를 PATH 에 넣거나, `.command` 에 exe 전체 경로를 적을 것.
 3. **VS Code + LaTeX Workshop** 확장 (`James-Yu.latex-workshop`). 레포를 열면 설치를 추천한다.
 4. **sioyek inverse search 설정** — sioyek 의 `prefs_user.config` 에 VS Code 를 띄우는 명령을 적는다 (`%1` = tex 파일, `%2` = 줄).
    ```
    # Windows: scripts/vscode-goto.js 를 %APPDATA%\sioyek\ 에 복사한 뒤
-   inverse_search_command wscript //B "C:\Users\<me>\AppData\Roaming\sioyek\vscode-goto.js" "%1" %2
+   inverse_search_command wscript //B //E:jscript "C:\Users\<me>\AppData\Roaming\sioyek\vscode-goto.js" "%1" %2
    # macOS / Linux (`code` 가 PATH 에 있어야 한다: "Shell Command: Install 'code' command in PATH")
    inverse_search_command code -r -g "%1:%2"
    ```
+   `<me>` 는 **실제 사용자 이름으로 바꿔야 한다** (`echo %USERNAME%`). 그대로 두면 존재하지 않는 경로라 조용히 아무 일도 안 일어난다.
+   `//E:jscript` 도 빼면 안 된다. WSH 는 스크립트 엔진을 파일 확장자로 고르는데, 다른 앱이 레지스트리 `HKCR` 의 `.js` 연결을
+   가져갔거나 비어 있으면 `There is no script engine for file extension ".js"` 로 실패한다. `//B` 때문에 에러 창조차 뜨지 않는다.
+   (직접 확인: `cscript //nologo //E:jscript "%APPDATA%\sioyek\vscode-goto.js" "D:\path\main.tex" 10` — VS Code 가 그 줄로 점프하면 정상.)
    Windows 에서 런처를 거치는 이유: 최근 VS Code 의 `Code.exe` 는 `-r -g` 를 직접 받지 않고(`bad option`), `code.cmd` 를 그대로 부르면
    클릭마다 콘솔 창이 깜빡인다. `wscript`(콘솔 없음)가 `code.cmd` 를 숨김 창으로 실행해 둘 다 피한다.
    파일 위치 — Windows: `%APPDATA%\sioyek\prefs_user.config` (portable 빌드는 `sioyek.exe` 옆의 파일. 둘 다 써 두면 확실하다),
